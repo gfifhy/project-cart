@@ -24,17 +24,33 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
-        });
+        $this->configureRateLimiting();
+
 
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
-                ->group(base_path('routes/api.php'));
+                ->group(base_path('routes/api/auth/auth.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+            Route::middleware(['api', 'auth:sanctum'])
+                ->prefix('api/user')
+                ->group(base_path('routes/api/buyer/buyer.php'));
+
+
+        });
+    }
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60 )->by($request->user()?->id ?: $request->ip())->response(function (Request $request){
+                return $this->throwException('Too many request. Try again later', '429');
+            });
+        });
+
+        RateLimiter::for('loginThrottle', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip())->response(function (Request $request){
+                return $this->throwException('Too many request. Try again later', '429');
+            });
         });
     }
 }
