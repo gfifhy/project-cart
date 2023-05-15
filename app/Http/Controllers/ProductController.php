@@ -2,46 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        return Product::whereNull('deleted_at')->where('stock','>','1')->get();
+        $query = Product::whereNull('deleted_at')->where('stock','>','0');
+        if($request->integer('orderBy') !== null){
+            $order = explode(',', $request->input('orderBy'));
+            if(count($order) < 2) {
+                return $this->throwException('invalid query', 402);
+            }
+            $order[0] = $order[0] === 'date' ? 'created_at' : $order[0];
+            if ($order[1] === 'asc') {
+                $query->orderBy($order[0], 'asc');
+            }
+            elseif ($order[1] === 'desc') {
+                $query->orderBy($order[0], 'desc');
+            }
+        }
+
+        //brand
+        if($request->input('brand') !== null) {
+            $brand = Brand::whereIn('slug', explode(',', $request->input('brand')))->pluck('id');
+            if(count($brand) > 0){
+                $query->whereIn('brand_id', $brand);
+            }
+        }
+        //minprice
+        if($request->input('minPrice') !== null) {
+            $query->where('price', '>=', $request->input('minPrice'));
+        }
+
+        //maxPrice
+        if($request->input('maxPrice') !== null) {
+            $query->where('price', '<=', $request->input('maxPrice'));
+        }
+        $products = $query->paginate(25);
+        return $products;
+        //return Product::whereNull('deleted_at')->where('stock','>','1')->paginate(25);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'name' => 'required|string|unique:products,name',
+            'price' => 'required|string',
+            'stock' => 'required|string',
+            'attributes' => 'required|string',
+            'category_id' => 'required|string',
+        ]);
+
+
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

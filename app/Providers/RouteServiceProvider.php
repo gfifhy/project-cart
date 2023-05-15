@@ -30,6 +30,10 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
+                ->group(base_path('routes/api/public/public.php'));
+
+            Route::middleware('api')
+                ->prefix('api')
                 ->group(base_path('routes/api/auth/auth.php'));
 
             Route::middleware(['api', 'auth:sanctum'])
@@ -48,7 +52,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('loginThrottle', function (Request $request) {
-            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip())->response(function (Request $request){
+            return Limit::perMinute(20)->by($request->user()?->id ?: $request->ip())->response(function (Request $request){
                 return $this->throwException('Too many request. Try again later', '429');
             });
         });
