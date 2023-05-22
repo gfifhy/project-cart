@@ -65,7 +65,7 @@ class CategoryController extends Controller
         $id = Category::where('slug', $slug)->pluck('id')[0];
         if ($id) {
             $ids = $this->getAllDescendantsId(Category::find($id));
-            $query = Product::whereIn('category_id', $ids);
+            $query = Product::whereIn('category_id', $ids)->with('images');
 
 
             //orderBy

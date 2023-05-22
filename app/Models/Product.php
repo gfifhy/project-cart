@@ -23,4 +23,8 @@ class Product extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function images() {
+        return $this->hasMany(ProductImage::class);
+    }
 }

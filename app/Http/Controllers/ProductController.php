@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Traits\ExceptionTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    use ExceptionTrait;
 
     public function index(Request $request)
     {
-        $query = Product::whereNull('deleted_at')->where('stock','>','0');
-        if($request->integer('orderBy') !== null){
+        $query = Product::whereNull('deleted_at')->where('stock','>','0')->with('images');
+        if($request->input('orderBy') !== null){
             $order = explode(',', $request->input('orderBy'));
             if(count($order) < 2) {
                 return $this->throwException('invalid query', 402);
