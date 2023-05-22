@@ -18,5 +18,6 @@ class Address extends Model
         'barangay',
         'street',
         'note',
+        'zipcode',
     ];
 }

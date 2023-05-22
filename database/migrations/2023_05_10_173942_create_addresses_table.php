@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('barangay');
             $table->string('street');
-            $table->string('note');
+            $table->string('zipcode');
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

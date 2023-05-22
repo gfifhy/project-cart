@@ -10,18 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
-     */
     public const HOME = '/home';
 
-    /**
-     * Define your route model bindings, pattern filters, and other route configuration.
-     */
     public function boot(): void
     {
         $this->configureRateLimiting();
@@ -39,6 +29,18 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware(['api', 'auth:sanctum'])
                 ->prefix('api/user')
                 ->group(base_path('routes/api/buyer/buyer.php'));
+
+            Route::middleware(['api', 'auth:sanctum'])
+                ->prefix('api/user')
+                ->group(base_path('routes/api/buyer/buyer.php'));
+
+            Route::middleware(['api', 'auth:sanctum'])
+                ->prefix('api/admin')
+                ->group(base_path('routes/api/admin/admin.php'));
+
+            Route::middleware(['api', 'auth:sanctum'])
+                ->prefix('api/telesales')
+                ->group(base_path('routes/api/telesales/telesales.php'));
 
 
         });

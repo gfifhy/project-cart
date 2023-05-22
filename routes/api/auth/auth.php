@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 //rate limit
 Route::group(['middleware' => ['throttle:loginThrottle']], function(){
     Route::post('/login', [AuthController::class,'login'])->name('auth.studentLogin');
-    Route::post('/register', [AuthController::class,'register'])->name('auth.studentLogin');
+    Route::post('/register', [AuthController::class,'register'])->name('auth.register');
     Route::post('/admin/login', [AuthController::class,'adminLogin'])->name('auth.adminLogin');
 });
 

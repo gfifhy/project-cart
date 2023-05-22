@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -55,8 +57,32 @@ class ProductController extends Controller
             'stock' => 'required|string',
             'attributes' => 'required|string',
             'category_id' => 'required|string',
+            'brand_id' => 'required|string',
+            'image_links' => 'required|string',
         ]);
 
+        $product = Product::create([
+            'name' => $fields['name'],
+            'slug' => Str::slug($fields['name']),
+            'price' => $fields['price'],
+            'stock' => $fields['stock'],
+            'attributes' => $fields['attributes'],
+            'category_id' => $fields['category_id'],
+            'brand_id' => $fields['brand_id'],
+        ]);
+
+
+        $productImages = [];
+        $imageLinks = explode(',',$fields['image_links']);
+        for($i=0; $i<count($imageLinks);$i++){
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_link' => $imageLinks[$i],
+            ]);
+        }
+        $product->images = $imageLinks;
+
+        return $product;
 
     }
 
@@ -67,7 +93,9 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
-        //
+        $product = Product::find($id);
+        $product->update($request->all());
+        return $product;
     }
 
     public function destroy(string $id)

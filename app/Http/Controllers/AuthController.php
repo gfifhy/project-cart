@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Utils\FileServiceInterface;
@@ -20,6 +21,43 @@ class AuthController extends Controller
     {
         $this->fileService = $fileService;
     }*/
+    public function register(Request $request) {
+        $fields = $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string|confirmed|min:8',
+            'contact_number' => 'required|string|unique:users,contact_number',
+            'street' => 'required|string',
+            'barangay' => 'required|string',
+            'city' => 'required|string',
+            'region' => 'required|string',
+            'province' => 'required|string',
+            'note' => '',
+            'zipcode' => 'required|integer'
+        ]);
+
+        $address = Address::create([
+            'region' => $fields['region'],
+            'province' => $fields['province'],
+            'city' => $fields['city'],
+            'barangay' => $fields['barangay'],
+            'street' => $fields['street'],
+            'note' => $fields['note'],
+            'zipcode' => $fields['zipcode'],
+        ]);
+        $user = User::create([
+            'first_name' => $fields['first_name'],
+            'last_name' => $fields['last_name'],
+            'contact_number' => $fields['contact_number'],
+            'email' => $fields['email'],
+            'role_id' => '5762ddd2-dad9-4729-b77a-7b06ea14eb3e',
+            'password' => bcrypt($fields['password']),
+            'address_id' => $address->id,
+        ]);
+        $user->address = $address;
+        return response($user, 201);
+    }
     public function login(Request $request)
     {
         $fields = $request->validate([

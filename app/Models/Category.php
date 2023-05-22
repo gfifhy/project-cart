@@ -30,9 +30,4 @@ class Category extends Model
         $childrenIds = $this->descendants->pluck('id')->toArray();
         return array_merge([$this->id], $childrenIds);
     }
-
-    /*public static function getAllCategoriesWithChildren()
-    {
-        $categories = Category::whereNull('category_id')->with('descendants')->get();
-    }*/
 }
