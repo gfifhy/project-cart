@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ExceptionTrait;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -72,14 +73,15 @@ class AuthController extends Controller
             return $this->throwException('Wrong Password!', 400);
         }
         $token = $user->createToken('token', Carbon::now()->addDays(3))->plainTextToken;
-        $cookie = cookie('auth_token', $token, 60*24*3, '/', null, false, true, false, 'None');
+        $cookie = cookie('auth_token', $token, 60*24*3, '/', null, false, true, false);
         return response($user, 201)->withCookie($cookie);
     }
     public function profile(Request $request){
         return Auth::user();
     }
-    public function logout(Request $request){
+    public function logout(){
         auth()->user()->tokens()->delete();
-        return response('Logout', 201);
+        $cookie = Cookie::forget('auth_token');
+        return response('Logout', 201)->withCookie($cookie);
     }
 }

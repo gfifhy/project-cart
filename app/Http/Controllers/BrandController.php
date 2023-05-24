@@ -4,46 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return Brand::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'name' => 'required|string'
+        ]);
+        $brand = Brand::create([
+            'name' => $fields['name'],
+            'slug' => Str::slug($fields['name']),
+        ]);
+
+        return response($brand,201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+
+        $brand = Brand::find($id);
+        $brand->update($request->all());
+        return $brand;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+       return Brand::destroy($id);
     }
 }

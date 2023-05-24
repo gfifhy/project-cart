@@ -73,8 +73,6 @@ class ProductController extends Controller
             'brand_id' => $fields['brand_id'],
         ]);
 
-
-        $productImages = [];
         $imageLinks = explode(',',$fields['image_links']);
         for($i=0; $i<count($imageLinks);$i++){
             ProductImage::create([
@@ -90,7 +88,8 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
-        //
+        $product = Product::find($id)->with('images')->with('brand')->with('category');
+        return response($product, 201);
     }
 
     public function update(Request $request, string $id)
@@ -102,6 +101,6 @@ class ProductController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        return Product::destroy($id);
     }
 }
