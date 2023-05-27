@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('slug');
             $table->string('price');
             $table->integer('stock');
+            $table->string('description')->nullable();
             $table->string('attributes')->nullable();
             $table->char('category_id');
             $table->char('brand_id');

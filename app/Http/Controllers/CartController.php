@@ -35,7 +35,7 @@ class CartController extends Controller
             $cart->delete();
             return response("Cart Deleted", 200);
         }
-        return response("Unsuccessful", 401);
+        return response("Unsuccessful", 400);
 
     }
 
