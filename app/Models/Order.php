@@ -17,4 +17,8 @@ class Order extends Model
         'user_id',
         'status'
     ];
+
+    public function product() {
+        return $this->belongsTo(Product::class, 'product_id')->with('brand')->with('category');
+    }
 }
