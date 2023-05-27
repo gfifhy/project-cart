@@ -63,9 +63,6 @@ class CartController extends Controller
                 'status' => "Confirming",
             ]);
         }
-        $product->stock = $product->stock - $fields['quantity'];
-        $product->save();
-
         return response(["order" => $cart, "product" => $product], 201);
     }
 }
