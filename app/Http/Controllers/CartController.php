@@ -14,7 +14,7 @@ class CartController extends Controller
     use ExceptionTrait;
     public function index()
     {
-        return Cart::where('user_id', Auth::user()->id)->get();
+        return Cart::where('user_id', Auth::user()->id)->with('product')->get();
     }
     public function update(Request $request, string $id)
     {
@@ -45,20 +45,24 @@ class CartController extends Controller
             'product_id' => 'required|string',
             'quantity' => 'required|string',
         ]);
-        $cart = cart::where('product_id', $fields['product_id'])->where('user_id', Auth::user()->id)->first();
+
+        $product = Product::find($fields['product_id']);
+        if($product){
+            return  $this->throwException('Invalid Product', 400);
+        }
+        $cart = Cart::where('product_id', $fields['product_id'])->where('user_id', Auth::user()->id)->first();
         if($cart){
             $cart->quantity  += $fields['quantity'];
             $cart->save();
 
         } else {
-            $cart = cart::create([
+            $cart = Cart::create([
                 'product_id' => $fields['product_id'],
                 'user_id' => Auth::user()->id,
                 'quantity' => $fields['quantity'],
                 'status' => "Confirming",
             ]);
         }
-        $product = Product::find($fields['product_id']);
         $product->stock = $product->stock - $fields['quantity'];
         $product->save();
 

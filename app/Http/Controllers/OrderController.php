@@ -14,7 +14,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::where('user_id', Auth::user()->id)->get();
+        return Order::where('user_id', Auth::user()->id)->with('category')->with('brand')->get();
     }
 
 
@@ -24,13 +24,16 @@ class OrderController extends Controller
             'product_id' => 'required|string',
             'quantity' => 'required|string',
         ]);
-            $order = Order::create([
-                'product_id' => $fields['product_id'],
-                'user_id' => Auth::user()->id,
-                'quantity' => $fields['quantity'],
-                'status' => "Confirming",
-            ]);
         $product = Product::find($fields['product_id']);
+        if($product){
+            return  $this->throwException('Invalid Product', 400);
+        }
+        $order = Order::create([
+            'product_id' => $fields['product_id'],
+            'user_id' => Auth::user()->id,
+            'quantity' => $fields['quantity'],
+            'status' => "Confirming",
+        ]);
         $product->stock = $product->stock - $fields['quantity'];
         $product->save();
 
