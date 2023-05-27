@@ -25,7 +25,7 @@ class OrderController extends Controller
             'quantity' => 'required|string',
         ]);
         $product = Product::find($fields['product_id']);
-        if($product){
+        if(!$product){
             return  $this->throwException('Invalid Product', 400);
         }
         $order = Order::create([

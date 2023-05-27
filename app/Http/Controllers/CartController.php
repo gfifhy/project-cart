@@ -47,7 +47,7 @@ class CartController extends Controller
         ]);
 
         $product = Product::find($fields['product_id']);
-        if($product){
+        if(!$product){
             return  $this->throwException('Invalid Product', 400);
         }
         $cart = Cart::where('product_id', $fields['product_id'])->where('user_id', Auth::user()->id)->first();
