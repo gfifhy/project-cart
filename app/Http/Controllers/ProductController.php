@@ -92,9 +92,9 @@ class ProductController extends Controller
         return response($product, 201);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $slug)
     {
-        $product = Product::find($id);
+        $product = Product::where('slug',$slug);
         $product->update($request->all());
         return $product;
     }

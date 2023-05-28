@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['role:buyer']], function(){
     Route::get('/products', [ProductController::class, 'index'])->name('all.products');
+    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('show.products');
     Route::get('/categories', [CategoryController::class, 'index'])->name('all.products');
     Route::get('/cart', [CartController::class, 'index'])->name('all.cart');
     Route::post('/cart', [CartController::class, 'store'])->name('store.cart');
