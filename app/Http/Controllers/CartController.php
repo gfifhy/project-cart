@@ -30,12 +30,18 @@ class CartController extends Controller
 
     public function destroy(string $id)
     {
-        $cart = Cart::where('user_id', Auth::user()->id)->where('id',$id)->first();
-        if($cart){
-            $cart->delete();
-            return response("Cart Deleted", 200);
+
+        if($id == 'all'){
+            Cart::where('user_id', Auth::user()->id)->delete();
+            return response('Success!', 200);
+        }else {
+            $cart = Cart::where('user_id', Auth::user()->id)->where('id',$id)->first();
+            if($cart){
+                $cart->delete();
+                return response("Cart Deleted", 200);
+            }
+            return response("Unsuccessful", 400);
         }
-        return response("Unsuccessful", 400);
 
     }
 
@@ -65,4 +71,5 @@ class CartController extends Controller
         }
         return response(["order" => $cart, "product" => $product], 201);
     }
+
 }

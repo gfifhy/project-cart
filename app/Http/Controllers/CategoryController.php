@@ -16,10 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         return Category::whereNull('category_id')->with('descendants')->get();
-
     }
-
-
     public function store(Request $request)
     {
         //
@@ -29,7 +26,7 @@ class CategoryController extends Controller
     {
         $id = Category::where('slug', $slug)->pluck('id')[0];
         $ids = (isset($id)) ? $this->getAllDescendantsId(Category::find($id)): $this->throwException("Invalid Category", 402);
-        return Product::whereIn('category_id', $ids)->paginate(25);
+        return Product::whereIn('category_id', $ids)->with('category')->with('brand')->with('images')->paginate(25);
     }
 
     public function update(Request $request, string $id)

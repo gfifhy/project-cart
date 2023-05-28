@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $query = Product::whereNull('deleted_at')->where('stock','>','0')->with('images');
+        $query = Product::whereNull('deleted_at')->where('stock','>','0')->with('images')->with('brand')->with('category');
         if($request->input('orderBy') !== null){
             $order = explode(',', $request->input('orderBy'));
             if(count($order) < 2) {
@@ -102,5 +102,12 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         return Product::destroy($id);
+    }
+    public function search(Request $request)
+    {
+        if(isset($request->client_name)){
+            return Product::where('name', 'LIKE', '%'.$request->product_name.'%')->get();
+        }
+        return "";
     }
 }
