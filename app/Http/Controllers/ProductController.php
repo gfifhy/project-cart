@@ -86,9 +86,9 @@ class ProductController extends Controller
 
     }
 
-    public function show(string $id)
+    public function show(string $slug)
     {
-        $product = Product::find($id)->with('images')->with('brand')->with('category');
+        $product = Product::where("slug",$slug)->with('images')->with('brand')->with('category');
         return response($product, 201);
     }
 
