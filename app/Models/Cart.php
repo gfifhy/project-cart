@@ -18,6 +18,6 @@ class Cart extends Model
     ];
 
     public function product() {
-        return $this->belongsTo(Product::class, 'product_id')->with('brand')->with('category');
+        return $this->belongsTo(Product::class, 'product_id')->with('brand')->with('category')->with('images');
     }
 }

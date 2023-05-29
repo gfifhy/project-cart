@@ -21,23 +21,9 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'product_id' => 'required|string',
-            'quantity' => 'required|string',
+            'cart_id' => 'required|string',
         ]);
-        $product = Product::find($fields['product_id']);
-        if(!$product){
-            return  $this->throwException('Invalid Product', 400);
-        }
-        $order = Order::create([
-            'product_id' => $fields['product_id'],
-            'user_id' => Auth::user()->id,
-            'quantity' => $fields['quantity'],
-            'status' => "Confirming",
-        ]);
-        $product->stock = $product->stock - $fields['quantity'];
-        $product->save();
-
-        return response(["order" => $order, "product" => $product], 201);
+        $cartIds = explode(",",$fields['cart_id']);
     }
 
     public function show(string $id)
