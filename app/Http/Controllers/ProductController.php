@@ -89,12 +89,12 @@ class ProductController extends Controller
     public function show(string $slug)
     {
         $product = Product::where("slug",$slug)->with('images')->with('brand')->with('category')->first();
-        return response($product, 201);
+        return response($product, 200);
     }
 
-    public function update(Request $request, string $slug)
+    public function update(Request $request, $slug)
     {
-        $product = Product::where('slug',$slug);
+        $product = Product::where('slug', $slug)->first();
         $product->update($request->all());
         return $product;
     }
