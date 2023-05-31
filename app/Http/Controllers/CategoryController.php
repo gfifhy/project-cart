@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Traits\ExceptionTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -15,11 +16,19 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return Category::whereNull('category_id')->with('descendants')->get();
+        return Category::with('descendants')->get();
     }
     public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'name' => 'required|string'
+        ]);
+        $brand = Category::create([
+            'name' => $fields['name'],
+            'slug' => Str::slug($fields['name']),
+        ]);
+
+        return response($brand,201);
     }
 
     public function show(string $slug)
@@ -31,12 +40,14 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
-
+        $category = Category::find($id);
+        $category->update($request->all());
+        return $category;
     }
 
     public function destroy(string $id)
     {
-        //
+        return Category::destroy($id);
     }
 
     public function getAllDescendants(Category $category)
