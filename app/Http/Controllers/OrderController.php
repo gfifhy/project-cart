@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -23,7 +24,19 @@ class OrderController extends Controller
         $fields = $request->validate([
             'cart_id' => 'required|string',
         ]);
-        $cartIds = explode(",",$fields['cart_id']);
+        $orders = array();
+        $carts = Cart::whereIn('id', explode(",",$fields['cart_id']))->get();
+        for($i=0; $i<count($carts); $i++){
+            $order = Order::create([
+                'quantity' => $carts[$i]->quantity,
+                'product_id' => $carts[$i]->product_id,
+                'user_id' => Auth::user()->id,
+                'status' => 'Confirming',
+            ]);
+            $orders[] = $order;
+            Cart::destroy($carts[$i]->id);
+        }
+        return $orders;
     }
 
     public function show(string $id)
