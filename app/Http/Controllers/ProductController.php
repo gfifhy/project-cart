@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Traits\ExceptionTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
@@ -94,8 +95,18 @@ class ProductController extends Controller
 
     public function update(Request $request, $slug)
     {
-        $product = Product::where('slug', $slug)->first();
-        $product->update($request->all());
+        $fields = $request->validate(['images' => 'required']);
+        $product = Product::where('slug', $slug)->with('images')->first();
+        $product->update($request->except('images'));
+        if (isset($request['images'])) {
+            ProductImage::destroy($product->images->pluck('id'));
+            $images = explode(',',$request->images);
+            $productImages = [];
+            for($i=0; $i<count($images);$i++){
+                $productImages[] = ProductImage::create(['image_link' => $images[$i], 'product_id' => $product->id]);
+            }
+            $product->images = $productImages;
+        }
         return $product;
     }
 
