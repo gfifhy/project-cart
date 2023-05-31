@@ -16,6 +16,7 @@ class CartController extends Controller
     {
         return Cart::where('user_id', Auth::user()->id)->with('product')->get();
     }
+
     public function update(Request $request, string $id)
     {
         $fields = $request->validate(['quantity' => 'required|string']);
@@ -28,21 +29,10 @@ class CartController extends Controller
         return $this->throwException("Product in cart not found", 402);
     }
 
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-
-        if($id == 'all'){
-            Cart::where('user_id', Auth::user()->id)->delete();
-            return response('Success!', 200);
-        }else {
-            $cart = Cart::where('user_id', Auth::user()->id)->where('id',$id)->first();
-            if($cart){
-                $cart->delete();
-                return response("Cart Deleted", 200);
-            }
-            return response("Unsuccessful", 400);
-        }
-
+        $ids = explode(',', $request['cart_id']);
+        return Cart::destroy($ids);
     }
 
     public function store(Request $request)
@@ -71,5 +61,4 @@ class CartController extends Controller
         }
         return response(["order" => $cart, "product" => $product], 201);
     }
-
 }

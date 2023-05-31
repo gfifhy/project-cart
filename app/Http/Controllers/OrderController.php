@@ -15,7 +15,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::where('user_id', Auth::user()->id)->with('category')->with('brand')->get();
+        return Order::where('user_id', Auth::user()->id)->with('product')->orderBy('created_at')->get()->groupBy(function ($order) {
+            return $order->created_at->format('Y-m-d');
+        });
     }
 
 
