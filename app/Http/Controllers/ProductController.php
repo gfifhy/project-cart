@@ -58,7 +58,7 @@ class ProductController extends Controller
             'name' => 'required|string|unique:products,name',
             'price' => 'required|string',
             'stock' => 'required|string',
-            'attributes' => 'required|string',
+            'attributes' => '',
             'category_id' => 'required|string',
             'brand_id' => 'required|string',
             'image_links' => 'required|string',
@@ -110,9 +110,9 @@ class ProductController extends Controller
         return $product;
     }
 
-    public function destroy(string $id)
+    public function destroy(string $slug)
     {
-        return Product::destroy($id);
+        return Product::destroy($slug);
     }
     public function search(Request $request)
     {

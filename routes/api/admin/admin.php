@@ -15,6 +15,7 @@ Route::group(['middleware' => ['role:admin']], function(){
     Route::post('/products', [ProductController::class, 'store'])->name('store.products');
     Route::get('/products/{slug}', [ProductController::class, 'show'])->name('show.products');
     Route::put('/products/{slug}', [ProductController::class, 'update'])->name('update.products');
+    Route::delete('/products/{slug}', [ProductController::class, 'destroy'])->name('delete.products');
 
     //categories
     Route::get('/categories', [CategoryController::class, 'index'])->name('all.categories');
