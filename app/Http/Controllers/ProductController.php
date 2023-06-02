@@ -112,7 +112,7 @@ class ProductController extends Controller
 
     public function destroy(string $slug)
     {
-        return Product::destroy($slug);
+        return Product::where('slug', $slug)->destroy();
     }
     public function search(Request $request)
     {
