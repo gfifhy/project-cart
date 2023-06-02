@@ -112,7 +112,12 @@ class ProductController extends Controller
 
     public function destroy(string $slug)
     {
-        return Product::where('slug', $slug)->destroy();
+        $product = Product::where('slug', $slug)->with('images')->first();
+        $images = ProductImage::destroy($product->images->pluck('id'));
+        $product->delete();
+        return response(['product' => $product, 'images' => $images], 200);
+
+
     }
     public function search(Request $request)
     {
