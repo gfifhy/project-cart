@@ -13,10 +13,14 @@ class AdminController extends Controller
         return User::with('role')->with('address')->get();
     }
 
-    public function getAllOrders() {
+    public function getAllOrders1() {
         return Order::with('product')->orderBy('user_id')->get()->groupBy(function ($order) {
             $user = User::where('id',$order->user_id)->first();
             return $user->first_name. " " . $user->last_name;
         });
+    }
+    public function getAllOrders()
+    {
+        return Order::with('product')->orderBy('created_at', 'desc')->paginate(25);
     }
 }
