@@ -77,7 +77,7 @@ class AuthController extends Controller
         return response($user, 201)->withCookie($cookie);
     }
     public function profile(Request $request){
-        return Auth::user();
+        return User::where('id', Auth::user()->id)->with('address')->first();
     }
     public function logout(){
         auth()->user()->tokens()->delete();
