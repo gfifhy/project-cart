@@ -11,6 +11,7 @@ Route::group(['middleware' => ['role:telesales']], function(){
     Route::get('/products/{slug}', [ProductController::class, 'show'])->name('show.products');
     Route::get('/orders/', [AdminController::class, 'getAllOrders'])->name('all.orders');
     Route::get('/orders/{id}', [ProductController::class, 'show'])->name('show.products');
+    Route::post('/orders/', [AdminController::class, 'changeStatusOrder'])->name('change.status');
 
 });
 

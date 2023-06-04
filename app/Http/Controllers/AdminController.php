@@ -23,4 +23,17 @@ class AdminController extends Controller
     {
         return Order::with('product')->orderBy('created_at', 'desc')->paginate(25);
     }
+
+    public function changeStatusOrder(Request $request){
+        $fields = $request->validate([
+            'order_id' => 'required'
+        ]);
+        $orders = Order::whereIn('id',explode(',',$fields['order_id']))->get();
+        for($i=0; $i<count($orders); $i++){
+            $orders[$i]->update(['status'=> 'Shipping']);
+        }
+        return $orders;
+
+
+    }
 }
