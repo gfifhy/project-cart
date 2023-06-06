@@ -21,7 +21,7 @@ class AdminController extends Controller
     }
     public function getAllOrders()
     {
-        return Order::with('product')->orderBy('created_at', 'desc')->paginate(25);
+        return Order::with('product')->orderBy('created_at', 'desc')->with('user')->paginate(25);
     }
 
     public function changeStatusOrder(Request $request){
